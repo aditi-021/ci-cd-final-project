@@ -26,7 +26,20 @@ jobs:
 
       - name: "Run unit tests with nose"
         run: |
-          nosetests -v --with-spec --spec-color --with-coverage --cover-package=app
+          python -m pip install --upgrade pip wheel
+          pip install -r requirements.txt
+          nosetests -v  # You can replace "-v" with any other params if needed.
+        
+      # New testing task (similar to Tekton 'nose' task)
+      - name: "Run tests with nose (Custom task)"
+        run: |
+          #!/bin/bash
+          set -e
+          python -m pip install --upgrade pip wheel
+          pip install -r requirements.txt
+          nosetests ${ARGS:-"-v"}  # Default to -v if ARGS is not set
+        env:
+          ARGS: "-v"  # Pass additional arguments to nosetests here if needed. Modify as needed.
 
       # New cleanup step
       - name: "Cleanup workspace"
